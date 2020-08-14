@@ -139,8 +139,12 @@ class SimpleTree<T> {
                     if (needCut(i)) {
                         arrayList.add(temp.NodeValue);
                         arrayList.add(i.NodeValue);
+                        if(i.Children != null){
+                            queue.addAll(i.Children);
+                        }
+                    } else {
+                        queue.add(i);
                     }
-                    queue.add(i);
                 }
             }
         }
