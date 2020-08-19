@@ -1,12 +1,18 @@
 package com.company;
 
 import java.util.*;
+import java.util.Deque;
+import java.util.LinkedList;
 
 class Vertex {
     public int Value;
+    public boolean Hit;
+    public int index;
 
-    public Vertex(int val) {
+    public Vertex(int val, int i) {
         Value = val;
+        Hit = false;
+        index = i;
     }
 }
 
@@ -14,6 +20,7 @@ class SimpleGraph {
     Vertex[] vertex;
     int[][] m_adjacency;
     int max_vertex;
+    Deque<Vertex> deque = new LinkedList<>();
 
     public SimpleGraph(int size) {
         max_vertex = size;
@@ -22,10 +29,9 @@ class SimpleGraph {
     }
 
     public void AddVertex(int value) {
-        int index = 0;
-        for (; index < max_vertex; index++) {
-            if (vertex[index] == null) {
-                vertex[index] = new Vertex(value);
+        for (int i = 0; i < max_vertex; i++) {
+            if (vertex[i] == null) {
+                vertex[i] = new Vertex(value, i);
                 break;
             }
         }
@@ -33,7 +39,7 @@ class SimpleGraph {
 
     public void RemoveVertex(int v) {
         vertex[v] = null;
-        for(int i = 0; i < max_vertex; i ++){
+        for (int i = 0; i < max_vertex; i++) {
             m_adjacency[v][i] = 0;
             m_adjacency[i][v] = 0;
         }
@@ -51,5 +57,39 @@ class SimpleGraph {
     public void RemoveEdge(int v1, int v2) {
         m_adjacency[v1][v2] = 0;
         m_adjacency[v2][v1] = 0;
+    }
+
+    public ArrayList<Vertex> DepthFirstSearch(int VFrom, int VTo) {
+        ArrayList<Vertex> arrayList = new ArrayList<>();
+        deque = new LinkedList<>();
+        for (Vertex i : vertex) {
+            i.Hit = false;
+        }
+        DFS(vertex[VFrom], vertex[VTo]);
+        while (!deque.isEmpty()) {
+            arrayList.add(deque.pop());
+        }
+        return arrayList;
+    }
+
+    public boolean DFS(Vertex VFrom, Vertex Vto) {
+        VFrom.Hit = true;
+        deque.add(VFrom);
+        for (int i = 0; i < max_vertex; i++) {
+            if (m_adjacency[VFrom.index][i] == 1 && vertex[i].Value == Vto.Value) {
+                deque.add(vertex[i]);
+                return true;
+            }
+        }
+        for (int i = 0; i < max_vertex; i++) {
+            if (m_adjacency[VFrom.index][i] == 1 && !vertex[i].Hit && DFS(vertex[i], Vto)) {
+                return true;
+            }
+        }
+        deque.pop();
+        if (!deque.isEmpty()) {
+            DFS(deque.peek(), Vto);
+        }
+        return false;
     }
 }
