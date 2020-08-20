@@ -67,24 +67,32 @@ class SimpleGraph {
         return new ArrayList<>(stack);
     }
 
-    public boolean DFS(Vertex VFrom, Vertex Vto) {
+    public void DFS(Vertex VFrom, Vertex Vto) {
         VFrom.Hit = true;
         stack.push(VFrom);
         for (int i = 0; i < max_vertex; i++) {
             if (m_adjacency[VFrom.index][i] == 1 && vertex[i].Value == Vto.Value) {
                 stack.add(vertex[i]);
-                return true;
+                return;
             }
         }
         for (int i = 0; i < max_vertex; i++) {
-            if (m_adjacency[VFrom.index][i] == 1 && !vertex[i].Hit ) {
-                return DFS(vertex[i], Vto);
+            if (m_adjacency[VFrom.index][i] == 1 && !vertex[i].Hit) {
+                DFS(vertex[i], Vto);
+                return;
             }
         }
         stack.pop();
         if (!stack.isEmpty()) {
             DFS(stack.pop(), Vto);
         }
-        return false;
+    }
+
+
+    public ArrayList<Vertex> BreadthFirstSearch(int VFrom, int VTo) {
+        // Узлы задаются позициями в списке vertex.
+        // Возвращается список узлов -- путь из VFrom в VTo.
+        // Список пустой, если пути нету.
+        return new ArrayList<>();
     }
 }
