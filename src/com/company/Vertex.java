@@ -1,8 +1,7 @@
 package com.company;
 
 import java.util.*;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.Stack;
 
 class Vertex {
     public int Value;
@@ -20,7 +19,7 @@ class SimpleGraph {
     Vertex[] vertex;
     int[][] m_adjacency;
     int max_vertex;
-    Deque<Vertex> deque = new LinkedList<>();
+    Stack<Vertex> stack;
 
     public SimpleGraph(int size) {
         max_vertex = size;
@@ -60,35 +59,31 @@ class SimpleGraph {
     }
 
     public ArrayList<Vertex> DepthFirstSearch(int VFrom, int VTo) {
-        ArrayList<Vertex> arrayList = new ArrayList<>();
-        deque = new LinkedList<>();
+        stack = new Stack<>();
         for (Vertex i : vertex) {
             i.Hit = false;
         }
         DFS(vertex[VFrom], vertex[VTo]);
-        while (!deque.isEmpty()) {
-            arrayList.add(deque.pop());
-        }
-        return arrayList;
+        return new ArrayList<>(stack);
     }
 
     public boolean DFS(Vertex VFrom, Vertex Vto) {
         VFrom.Hit = true;
-        deque.add(VFrom);
+        stack.push(VFrom);
         for (int i = 0; i < max_vertex; i++) {
             if (m_adjacency[VFrom.index][i] == 1 && vertex[i].Value == Vto.Value) {
-                deque.add(vertex[i]);
+                stack.add(vertex[i]);
                 return true;
             }
         }
         for (int i = 0; i < max_vertex; i++) {
-            if (m_adjacency[VFrom.index][i] == 1 && !vertex[i].Hit && DFS(vertex[i], Vto)) {
-                return true;
+            if (m_adjacency[VFrom.index][i] == 1 && !vertex[i].Hit ) {
+                return DFS(vertex[i], Vto);
             }
         }
-        deque.pop();
-        if (!deque.isEmpty()) {
-            DFS(deque.peek(), Vto);
+        stack.pop();
+        if (!stack.isEmpty()) {
+            DFS(stack.pop(), Vto);
         }
         return false;
     }
