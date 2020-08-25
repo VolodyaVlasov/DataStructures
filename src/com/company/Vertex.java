@@ -94,47 +94,85 @@ class SimpleGraph {
 
 
     public ArrayList<Vertex> BreadthFirstSearch(int VFrom, int VTo) {
-        Queue<Vertex> queue = new LinkedList<>();
         ArrayList<Vertex> path = new ArrayList<>();
-        if (m_adjacency[VFrom][VTo] == 1) {
-            path.add(vertex[VFrom]);
-            path.add(vertex[VTo]);
-            return path;
-        }
+        Queue<Vertex> queue = new LinkedList<>();
         queue.add(vertex[VFrom]);
         for (Vertex i : vertex) {
             i.Hit = false;
             i.parent = null;
         }
-        boolean stop = true;
-        while (!queue.isEmpty() && stop) {
+        outerloop:
+        while (!queue.isEmpty()) {
             Vertex v = queue.poll();
-            v.Hit = true;
             for (int i = 0; i < max_vertex; i++) {
-                if (m_adjacency[v.index][i] == 1) {
-                    if (vertex[i].Value == vertex[VTo].Value) {
-                        stop = false;
-
+                if (m_adjacency[v.index][i] == 1 && !vertex[i].Hit) {
+                    Vertex temp = vertex[i];
+                    temp.parent = v;
+                    if (temp == vertex[VTo]) {
+                        break outerloop;
                     }
-                    if (!vertex[i].Hit) {
-                        if (vertex[i].parent == null) {
-                            vertex[i].parent = v;
-                        }
-                        queue.add(vertex[i]);
-                    }
+                    temp.Hit = true;
+                    queue.add(temp);
                 }
             }
+            v.Hit = true;
         }
-
-        Vertex p = vertex[VTo];
-        while (p.parent != null) {
+        Vertex p = vertex[VTo].parent;
+        if (p != null) {
+            path.add(vertex[VTo]);
+        }
+        while (p != null) {
             path.add(p);
+            if (p.parent != null && p.Value == p.parent.Value) {
+                break;
+            }
             p = p.parent;
-        }
-        if (path.size() > 0) {
-            path.add(vertex[VFrom]);
+
         }
         Collections.reverse(path);
         return path;
+    }
+
+    public ArrayList<Vertex> WeakVertices() {
+        ArrayList<Vertex> arrayList = new ArrayList<>();
+        Vertex one;
+        Vertex two;
+        for (Vertex i : vertex) {
+            i.Hit = false;
+        }
+        for (int i = 0; i < max_vertex; i++) {
+            one = vertex[i];
+            if (!one.Hit) {
+                for (int j = 0; j < max_vertex; j++) {
+                    if (j != i && m_adjacency[i][j] == 1) {
+                        two = vertex[j];
+                        Vertex temp = isTriangle(one, two);
+                        if (temp != null) {
+                            one.Hit = true;
+                            two.Hit = true;
+                            temp.Hit = true;
+                            break;
+                        }
+                    }
+
+                }
+            }
+        }
+        for (Vertex i : vertex) {
+            if (!i.Hit) {
+                arrayList.add(i);
+            }
+        }
+        return arrayList;
+    }
+
+
+    public Vertex isTriangle(Vertex one, Vertex two) {
+        for (int i = 0; i < max_vertex; i++) {
+            if (m_adjacency[one.index][i] == 1 && m_adjacency[two.index][i] == 1 && m_adjacency[one.index][two.index] == 1) {
+                return vertex[i];
+            }
+        }
+        return null;
     }
 }
