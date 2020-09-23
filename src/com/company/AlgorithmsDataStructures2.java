@@ -3,8 +3,8 @@ package com.company;
 import java.util.*;
 import java.util.Arrays;
 
-
 public class AlgorithmsDataStructures2 {
+    
     public static int[] b;
 
     public static int[] GenerateBBSTArray(int[] a) {
@@ -29,4 +29,5 @@ public class AlgorithmsDataStructures2 {
             balance(right, 2 * level + l, 2);
         }
     }
+    
 }
