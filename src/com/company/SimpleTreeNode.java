@@ -20,7 +20,6 @@ class SimpleTree<T> {
     public SimpleTreeNode<T> Root;
     public int count;
 
-
     public SimpleTree(SimpleTreeNode<T> root) {
         Root = root;
         count = 0;
@@ -32,7 +31,6 @@ class SimpleTree<T> {
     public void addChild(SimpleTreeNode<T> ParentNode, SimpleTreeNode<T> NewChild) {
         if (ParentNode.Children == null) {
             ParentNode.Children = new LinkedList<>();
-
         }
         ParentNode.Children.add(NewChild);
         NewChild.Parent = ParentNode;

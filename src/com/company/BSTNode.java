@@ -1,38 +1,30 @@
 package com.company;
 
-import java.io.*;
 import java.util.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
 
 class BSTNode<T> {
-    public int NodeKey; // ключ узла
-    public T NodeValue; // значение в узле
-    public BSTNode<T> Parent; // родитель или null для корня
-    public BSTNode<T> LeftChild; // левый потомок
-    public BSTNode<T> RightChild; // правый потомок
-
+    protected int nodeKey;
+    protected T nodeValue;
+    protected BSTNode<T> parent;
+    protected BSTNode<T> leftChild;
+    protected BSTNode<T> rightChild;
 
     public BSTNode(int key, T val, BSTNode<T> parent) {
-        NodeKey = key;
-        NodeValue = val;
-        Parent = parent;
-        LeftChild = null;
-        RightChild = null;
+        nodeKey = key;
+        nodeValue = val;
+        this.parent = parent;
+        leftChild = null;
+        rightChild = null;
     }
 }
 
-// промежуточный результат поиска
 class BSTFind<T> {
-    // null если в дереве вообще нету узлов
-    public BSTNode<T> Node;
-
-    // true если узел найден
-    public boolean NodeHasKey;
-
-    // true, если родительскому узлу надо добавить новый левым
-    public boolean ToLeft;
+    protected BSTNode<T> Node;
+    protected boolean NodeHasKey;
+    protected boolean ToLeft;
 
     public BSTFind() {
         Node = null;
@@ -40,189 +32,188 @@ class BSTFind<T> {
 }
 
 class BST<T> {
-    BSTNode<T> Root; // корень дерева, или null
+    BSTNode<T> root; // корень дерева, или null
     int count;
     ArrayList<BSTNode> arrayList;
 
     public BST(BSTNode<T> node) {
-        Root = node;
-        count = Root != null ? 1 : 0;
+        root = node;
+        count = root != null ? 1 : 0;
     }
 
-    public BSTFind<T> FindNodeByKey(int key) {
+    public BSTFind<T> findNodeByKey(int key) {
         BSTFind<T> bstFind = new BSTFind<>();
-        BSTNode<T> start = Root;
+        BSTNode<T> start = root;
         BSTNode<T> temp = start;
         while (start != null) {
-            if (start.NodeKey == key) {
+            if (start.nodeKey == key) {
                 bstFind.Node = start;
                 bstFind.NodeHasKey = true;
                 return bstFind;
-            } else if (start.NodeKey > key) {
+            } else if (start.nodeKey > key) {
                 temp = start;
-                start = start.LeftChild;
+                start = start.leftChild;
             } else {
                 temp = start;
-                start = start.RightChild;
+                start = start.rightChild;
             }
         }
         bstFind.Node = temp;
         bstFind.NodeHasKey = false;
-        bstFind.ToLeft = temp.NodeKey > key;
+        bstFind.ToLeft = temp.nodeKey > key;
         return bstFind;
     }
 
-    public boolean AddKeyValue(int key, T val) {
+    public boolean addKeyValue(int key, T val) {
         BSTNode<T> bstNode = new BSTNode<>(key, val, null);
-        if (Root == null) {
-            Root = bstNode;
+        if (root == null) {
+            root = bstNode;
             count++;
             return true;
         }
-        BSTFind<T> bstFind = FindNodeByKey(key);
+        BSTFind<T> bstFind = findNodeByKey(key);
         if (bstFind.NodeHasKey) {
-            return false;// если ключ уже есть
+            return false;
         }
-        bstNode.Parent = bstFind.Node;// добавляем ключ-значение в дерево
+        bstNode.parent = bstFind.Node;
         if (bstFind.ToLeft) {
-            bstFind.Node.LeftChild = bstNode;
+            bstFind.Node.leftChild = bstNode;
         } else {
-            bstFind.Node.RightChild = bstNode;
+            bstFind.Node.rightChild = bstNode;
         }
         count++;
         return true;
     }
 
-    public BSTNode<T> FinMinMax(BSTNode<T> FromNode, boolean FindMax) {
+    public BSTNode<T> finMinMax(BSTNode<T> FromNode, boolean FindMax) {
         BSTNode<T> start = FromNode;
         BSTNode<T> temp = start;
         while (start != null) {
             if (FindMax) {
                 temp = start;
-                start = start.RightChild;
+                start = start.rightChild;
             } else {
                 temp = start;
-                start = start.LeftChild;
+                start = start.leftChild;
             }
         }
         return temp;
     }
 
-    public boolean DeleteNodeByKey(int key) {
-        BSTFind<T> bstFind = FindNodeByKey(key);
+    public boolean deleteNodeByKey(int key) {
+        BSTFind<T> bstFind = findNodeByKey(key);
         if (!bstFind.NodeHasKey) {
-            return false;// если узел не найден
+            return false;
         }
         BSTNode<T> bstNode = bstFind.Node;
-        if (bstNode.RightChild == null) {
-            if (bstNode.Parent == null) {
-                Root = bstNode.LeftChild;
-                bstNode.Parent = null;
+        if (bstNode.rightChild == null) {
+            if (bstNode.parent == null) {
+                root = bstNode.leftChild;
+                bstNode.parent = null;
             } else {
-                if (bstNode.Parent.LeftChild == bstNode) {
-                    bstNode.Parent.LeftChild = bstNode.LeftChild;
+                if (bstNode.parent.leftChild == bstNode) {
+                    bstNode.parent.leftChild = bstNode.leftChild;
                 } else {
-                    bstNode.Parent.RightChild = bstNode.LeftChild;
+                    bstNode.parent.rightChild = bstNode.leftChild;
                 }
-                if (bstNode.LeftChild != null) {
-                    bstNode.LeftChild.Parent = bstNode.Parent;
+                if (bstNode.leftChild != null) {
+                    bstNode.leftChild.parent = bstNode.parent;
                 }
             }
         } else {
-            BSTNode<T> minRight = bstNode.RightChild;
-            while (minRight.LeftChild != null) {
-                minRight = minRight.LeftChild;
+            BSTNode<T> minRight = bstNode.rightChild;
+            while (minRight.leftChild != null) {
+                minRight = minRight.leftChild;
             }
-            if (minRight.RightChild != null) {
-                if (minRight.Parent.LeftChild == minRight) {
-                    minRight.Parent.LeftChild = minRight.RightChild;
+            if (minRight.rightChild != null) {
+                if (minRight.parent.leftChild == minRight) {
+                    minRight.parent.leftChild = minRight.rightChild;
                 } else {
-                    minRight.Parent.RightChild = minRight.RightChild;
+                    minRight.parent.rightChild = minRight.rightChild;
                 }
             } else {
-                if (minRight.Parent.LeftChild == minRight) {
-                    minRight.Parent.LeftChild = null;
+                if (minRight.parent.leftChild == minRight) {
+                    minRight.parent.leftChild = null;
                 } else {
-                    minRight.Parent.RightChild = null;
+                    minRight.parent.rightChild = null;
                 }
             }
-            bstNode.NodeKey = minRight.NodeKey;
-            bstNode.NodeValue = minRight.NodeValue;
+            bstNode.nodeKey = minRight.nodeKey;
+            bstNode.nodeValue = minRight.nodeValue;
         }
         count--;
         return true;
     }
 
-    public int Count() {
-        return count; // количество узлов в дереве
+    public int count() {
+        return count;
     }
 
-    public ArrayList<BSTNode> WideAllNodes() {
+    public ArrayList<BSTNode> wideAllNodes() {
         arrayList = new ArrayList<>(count);
-        if (Root == null) {
+        if (root == null) {
             return arrayList;
         }
         Queue<BSTNode<T>> queue = new LinkedList<>();
-        queue.add(Root);
+        queue.add(root);
         while (!queue.isEmpty()) {
             BSTNode<T> temp = queue.poll();
             arrayList.add(temp);
-            if (temp.LeftChild != null) {
-                queue.add(temp.LeftChild);
+            if (temp.leftChild != null) {
+                queue.add(temp.leftChild);
             }
-            if (temp.RightChild != null) {
-                queue.add(temp.RightChild);
+            if (temp.rightChild != null) {
+                queue.add(temp.rightChild);
             }
         }
         return arrayList;
     }
 
-    public ArrayList<BSTNode> DeepAllNodes(int Order) {
+    public ArrayList<BSTNode> deepAllNodes(int Order) {
         arrayList = new ArrayList<>(count);
-        if (Root == null) {
+        if (root == null) {
             return arrayList;
         }
         if (Order == 0) {
-            inOrder(Root);
+            inOrder(root);
         }
         if (Order == 1) {
-            postOrder(Root);
+            postOrder(root);
         }
         if (Order == 2) {
-            preOrder(Root);
+            preOrder(root);
         }
         return arrayList;
     }
 
 
     void inOrder(BSTNode<T> root) { // left root right
-        if (root.LeftChild != null) {
-            inOrder(root.LeftChild);
+        if (root.leftChild != null) {
+            inOrder(root.leftChild);
         }
         arrayList.add(root);
-        if (root.RightChild != null) {
-            inOrder(root.RightChild);
+        if (root.rightChild != null) {
+            inOrder(root.rightChild);
         }
     }
 
     void postOrder(BSTNode<T> root) { // left rigth root
-        if (root.LeftChild != null) {
-            postOrder(root.LeftChild);
+        if (root.leftChild != null) {
+            postOrder(root.leftChild);
         }
-        if (root.RightChild != null) {
-            postOrder(root.RightChild);
+        if (root.rightChild != null) {
+            postOrder(root.rightChild);
         }
         arrayList.add(root);
     }
 
     void preOrder(BSTNode<T> root) { // root right left
         arrayList.add(root);
-        if (root.LeftChild != null) {
-            preOrder(root.LeftChild);
+        if (root.leftChild != null) {
+            preOrder(root.leftChild);
         }
-        if (root.RightChild != null) {
-            preOrder(root.RightChild);
+        if (root.rightChild != null) {
+            preOrder(root.rightChild);
         }
     }
-
 }
