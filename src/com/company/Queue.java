@@ -3,7 +3,7 @@ package com.company;
 import java.util.LinkedList;
 
 public class Queue<T> {
-    LinkedList<T> storage;
+    final LinkedList<T> storage;
     int count;
 
     public Queue() {
