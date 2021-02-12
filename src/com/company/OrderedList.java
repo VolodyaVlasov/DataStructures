@@ -2,7 +2,6 @@ package com.company;
 
 import java.util.*;
 
-
 class Node<T> {
     public T value;
     public Node<T> next, prev;
@@ -140,15 +139,4 @@ public class OrderedList<T> {
         }
         return r;
     }
-
-    public void show() {
-        Node<T> start = head;
-        while (start != null) {
-            System.out.println(start.value);
-            start = start.next;
-        }
-        System.out.println();
-        System.out.println(head.value + " " + tail.value);
-    }
-
 }
