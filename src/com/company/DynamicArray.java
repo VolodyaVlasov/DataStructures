@@ -4,23 +4,15 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class DynamicArray<T> {
-    public T[] array;
-    public int count;
-    public int capacity;
-    Class clazz;
+    private T[] array;
+    private int count;
+    private int capacity;
+    private Class clazz;
 
     public DynamicArray(Class clz) {
         clazz = clz;
         count = 0;
         makeArray(16);
-    }
-
-    public void makeArray(int new_capacity) {
-        if (new_capacity < 16) {
-            new_capacity = 16;
-        }
-        array = Arrays.copyOf((T[]) Array.newInstance(this.clazz, new_capacity), new_capacity);
-        capacity = array.length;
     }
 
     public T getItem(int index) {
@@ -61,5 +53,13 @@ public class DynamicArray<T> {
         if (count < capacity / 2) {
             makeArray((int) (capacity / 1.5));
         }
+    }
+
+    private void makeArray(int new_capacity) {
+        if (new_capacity < 16) {
+            new_capacity = 16;
+        }
+        array = Arrays.copyOf((T[]) Array.newInstance(this.clazz, new_capacity), new_capacity);
+        capacity = array.length;
     }
 }
