@@ -3,7 +3,7 @@ package com.company;
 import java.util.LinkedList;
 
 public class Deque<T> {
-    LinkedList<T> storage;
+    private LinkedList<T> storage;
     int count;
 
     public Deque() {
