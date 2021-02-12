@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class SimpleTreeNode<T> {
-    public T NodeValue;
-    public SimpleTreeNode<T> Parent;
-    public List<SimpleTreeNode<T>> Children;
+    protected T NodeValue;
+    protected SimpleTreeNode<T> Parent;
+    protected List<SimpleTreeNode<T>> Children;
 
     public SimpleTreeNode(T val, SimpleTreeNode<T> parent) {
         NodeValue = val;
@@ -29,7 +29,7 @@ class SimpleTree<T> {
         }
     }
 
-    public void AddChild(SimpleTreeNode<T> ParentNode, SimpleTreeNode<T> NewChild) {
+    public void addChild(SimpleTreeNode<T> ParentNode, SimpleTreeNode<T> NewChild) {
         if (ParentNode.Children == null) {
             ParentNode.Children = new LinkedList<>();
 
@@ -39,7 +39,7 @@ class SimpleTree<T> {
         count++;
     }
 
-    public void DeleteNode(SimpleTreeNode<T> NodeToDelete) {
+    public void deleteNode(SimpleTreeNode<T> NodeToDelete) {
         if (NodeToDelete.Children != null) {
             for (SimpleTreeNode<T> a : NodeToDelete.Children) {
                 a.Parent = NodeToDelete.Parent;
@@ -53,7 +53,7 @@ class SimpleTree<T> {
         }
     }
 
-    public List<SimpleTreeNode<T>> GetAllNodes() {
+    public List<SimpleTreeNode<T>> getAllNodes() {
         Queue<SimpleTreeNode<T>> queue = new LinkedList<>();
         LinkedList<SimpleTreeNode<T>> linkedList = new LinkedList<>();
         if (Root == null) {
@@ -69,7 +69,7 @@ class SimpleTree<T> {
         return linkedList;
     }
 
-    public List<SimpleTreeNode<T>> FindNodesByValue(T val) {
+    public List<SimpleTreeNode<T>> findNodesByValue(T val) {
         Queue<SimpleTreeNode<T>> queue = new LinkedList<>();
         LinkedList<SimpleTreeNode<T>> linkedList = new LinkedList<>();
         if (Root == null) {
@@ -89,7 +89,7 @@ class SimpleTree<T> {
         return linkedList;
     }
 
-    public void MoveNode(SimpleTreeNode<T> OriginalNode, SimpleTreeNode<T> NewParent) {
+    public void moveNode(SimpleTreeNode<T> OriginalNode, SimpleTreeNode<T> NewParent) {
         OriginalNode.Parent.Children.remove(OriginalNode);
         if (OriginalNode.Parent.Children.size() == 0) {
             OriginalNode.Parent.Children = null;
@@ -103,11 +103,11 @@ class SimpleTree<T> {
         NewParent.Children.add(OriginalNode);
     }
 
-    public int Count() {
+    public int count() {
         return count;
     }
 
-    public int LeafCount() {
+    public int leafCount() {
         int leafcount = 0;
         Queue<SimpleTreeNode<T>> queue = new LinkedList<>();
         if (Root == null) {
@@ -125,7 +125,7 @@ class SimpleTree<T> {
         return leafcount;
     }
 
-    public ArrayList<T> EvenTrees() {
+    public ArrayList<T> evenTrees() {
         ArrayList<T> arrayList = new ArrayList<>();
         if (count % 2 != 0 || count == 0) {
             return arrayList;
@@ -151,7 +151,7 @@ class SimpleTree<T> {
         return arrayList;
     }
 
-    public boolean needCut(SimpleTreeNode<T> a) {
+    private boolean needCut(SimpleTreeNode<T> a) {
         if (a.Children == null) {
             return false;
         }
