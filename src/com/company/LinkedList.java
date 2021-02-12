@@ -1,136 +1,338 @@
 package com.company;
 
-import java.util.ArrayList;
+import java.util.*;
 
-public class LinkedList {
-    public Node1 head;
-    public Node1 tail;
+public class LinkedList<T> implements List<T> {
+    private Item<T> firstInList = null;
+    private Item<T> lastInList = null;
+    private int size;
 
-    public LinkedList() {
-        head = null;
-        tail = null;
+    @Override
+    public int size() {
+        return this.size;
     }
 
-    public void addInTail(Node1 item) {
-        if (this.head == null)
-            this.head = item;
-        else
-            this.tail.next = item;
-        this.tail = item;
+    @Override
+    public boolean isEmpty() {
+        return this.size() == 0;
     }
 
-    public Node1 find(int value) {
-        Node1 node = this.head;
-        while (node != null) {
-            if (node.value == value)
-                return node;
-            node = node.next;
-        }
-        return null;
+    @Override
+    public boolean contains(final Object o) {
+        return indexOf(o) != -1;
     }
 
-    public ArrayList<Node1> findAll(int _value) {
-        ArrayList<Node1> nodes = new ArrayList<Node1>();
-        Node1 start = head;
+    @Override
+    public Iterator<T> iterator() {
+        return new ElementsIterator(0);
+    }
+
+    @Override
+    public Object[] toArray() {
+        final Object[] array = new Object[size()];
+        Item<T> start = firstInList;
+        int i = 0;
         while (start != null) {
-            if (start.value == _value) {
-                nodes.add(start);
-            }
-            start = start.next;
+            array[i++] = start.element;
+            start = start.nextItem;
         }
-        return nodes;
+        return array;
     }
 
-    public boolean remove(int _value) {
-        if (head != null && head.value == _value) {
-            head = head.next;
-            if (head == null) {
-                tail = null;
-            }
-            return true;
+    @Override
+    public <T1> T1[] toArray(T1[] a) {
+        if (a.length < size()) {
+            a = Arrays.copyOf(a, size());
         }
-        Node1 curr = head;
-        Node1 prev;
-        while (curr != null) {
-            prev = curr;
-            curr = curr.next;
-            if (curr.value == _value) {
-                prev.next = curr.next;
-                if (prev.next == null) {
-                    tail = prev;
+        Item<T> start = firstInList;
+        int i = 0;
+        while (start != null) {
+            a[i] = (T1) start.element;
+            start = start.nextItem;
+            i++;
+        }
+        if (a.length > size()) {
+            a[size()] = null;
+        }
+        return a;
+    }
+
+    @Override
+    public boolean add(final T newElement) {
+        final Item<T> item = new Item<>(newElement, lastInList, null);
+        if (firstInList == null) {
+            firstInList = item;
+        } else {
+            lastInList.nextItem = item;
+        }
+        lastInList = item;
+        size++;
+        return true;
+    }
+
+    @Override
+    public void add(final int index, final T element) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean remove(final Object o) {
+        Item<T> start = firstInList;
+        if (o == null) {
+            while (start != null) {
+                if (start.element == null) {
+                    remove(start);
+                    return true;
                 }
-                return true;
+                start = start.nextItem;
+            }
+        } else {
+            while (start != null) {
+                if (o.equals(start.element)) {
+                    remove(start);
+                    return true;
+                }
+                start = start.nextItem;
             }
         }
         return false;
     }
 
-    public void removeAll(int _value) {
-        while (head != null && head.value == _value) {
-            head = head.next;
-            if (head == null) {
-                tail = null;
-                break;
-            }
+    @Override
+    public T remove(final int index) throws IndexOutOfBoundsException {
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException();
         }
-        if (head != null) {
-            Node1 curr = head.next;
-            Node1 prev = head;
-            while (curr != null) {
-                if (curr.value == _value){
-                    prev.next = curr.next;
-                    curr = curr.next;
-                } else {
-                    prev = curr;
-                    curr = curr.next;
-                }
-                if(curr == null){
-                    tail = prev;
-                }
-            }
-        }
+        Item<T> item = getItemByIndex(index);
+        remove(item);
+        return item.element;
     }
 
+    private void remove(final Item<T> current) {
+        if (current.prevItem != null) {
+            current.prevItem.nextItem = current.nextItem;
+        } else {
+            firstInList = current.nextItem;
+        }
+        if (current.nextItem != null) {
+            current.nextItem.prevItem = current.prevItem;
+        } else {
+            lastInList = current.prevItem;
+        }
+        size--;
+    }
+
+    @Override
+    public boolean containsAll(final Collection<?> c) {
+        for (final Object item : c) {
+            if (!this.contains(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(final Collection<? extends T> c) {
+        for (final T item : c) {
+            add(item);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(final int index, final Collection elements) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean removeAll(final Collection<?> c) {
+        for (final Object item : c) {
+            remove(item);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean retainAll(final Collection<?> c) {
+        this.removeIf(item -> !c.contains(item));
+        return true;
+    }
+
+    @Override
     public void clear() {
-        head = null;
-        tail = null;
+        firstInList = null;
+        lastInList = null;
+        size = 0;
     }
 
-    public int count() {
-        Node1 start = head;
-        int numb = 0;
-        while (start != null) {
-            numb++;
-            start = start.next;
-        }
-        return numb;
+    @Override
+    public List<T> subList(final int start, final int end) {
+        return null;
     }
 
-    public void insertAfter(Node1 _nodeAfter, Node1 _nodeToInsert) {
-        if (_nodeAfter == null && _nodeToInsert != null) {
-            _nodeToInsert.next = head;
-            head = _nodeToInsert;
-            if (head.next == null) {
-                tail = head;
+    @Override
+    public ListIterator<T> listIterator() {
+        return new ElementsIterator(0);
+    }
+
+    @Override
+    public ListIterator<T> listIterator(final int index) {
+        return new ElementsIterator(index);
+    }
+
+    @Override
+    public int lastIndexOf(final Object target) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int indexOf(final Object o) {
+        Item<T> start = firstInList;
+        int index = 0;
+        if (o == null) {
+            while (start != null) {
+                if (start.element == null) {
+                    return index;
+                }
+                start = start.nextItem;
+                index++;
             }
-        } else if (_nodeToInsert != null) {
-            Node1 after = find(_nodeAfter.value);
-            _nodeToInsert.next = after.next;
-            after.next = _nodeToInsert;
-            if (_nodeToInsert.next == null) {
-                tail = _nodeToInsert;
+        } else {
+            while (start != null) {
+                if (o.equals(start.element)) {
+                    return index;
+                }
+                start = start.nextItem;
+                index++;
             }
+        }
+        return -1;
+    }
+
+    @Override
+    public T set(final int index, final T element) throws IndexOutOfBoundsException {
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        Item<T> item = getItemByIndex(index);
+        T e = item.element;
+        item.element = element;
+        return e;
+    }
+
+    @Override
+    public T get(final int index) throws IndexOutOfBoundsException {
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        return getItemByIndex(index).element;
+    }
+
+    private Item<T> getItemByIndex(final int index) {
+        Item<T> start = firstInList;
+        for (int i = 0; i < index; i++) {
+            start = start.nextItem;
+        }
+        return start;
+    }
+
+    private class ElementsIterator implements ListIterator<T> {
+        private Item<T> currentItemInIterator;
+        private Item<T> lastReturnedItemFromIterator;
+        private int index;
+
+        ElementsIterator(final int index) {
+            currentItemInIterator = index < size() ? getItemByIndex(index) : null;
+            this.index = index;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            lastReturnedItemFromIterator = currentItemInIterator;
+            currentItemInIterator = currentItemInIterator.nextItem;
+            index++;
+            return lastReturnedItemFromIterator.element;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return index > 0;
+        }
+
+        @Override
+        public T previous() {
+            if (!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            currentItemInIterator = currentItemInIterator == null ?
+                    lastInList : currentItemInIterator.prevItem;
+            lastReturnedItemFromIterator = currentItemInIterator;
+            index--;
+            return currentItemInIterator.element;
+        }
+
+        @Override
+        public void add(final T element) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(final T element) {
+            if(lastReturnedItemFromIterator == null) {
+                throw new IllegalStateException();
+            }
+            lastReturnedItemFromIterator.element = element;
+
+        }
+
+        @Override
+        public int previousIndex() {
+            return index - 1;
+        }
+
+        @Override
+        public int nextIndex() {
+            return index;
+        }
+
+        @Override
+        public void remove() {
+            if(lastReturnedItemFromIterator == null) {
+                throw new IllegalStateException();
+            }
+            LinkedList.this.remove(lastReturnedItemFromIterator);
+            index--;
+            lastReturnedItemFromIterator = null;
+
         }
     }
 
-}
+    private static class Item<T> {
+        private T element;
+        private Item<T> nextItem;
+        private Item<T> prevItem;
 
-class Node1 {
-    public int value;
-    public Node1 next;
+        Item(final T element, final Item<T> prevItem, final Item<T> nextItem) {
+            this.element = element;
+            this.nextItem = nextItem;
+            this.prevItem = prevItem;
+        }
 
-    public Node1(int _value) {
-        value = _value;
-        next = null;
+        public Item<T> getNextItem() {
+            return nextItem;
+        }
+
+        public Item<T> getPrevItem() {
+            return prevItem;
+        }
     }
 }
