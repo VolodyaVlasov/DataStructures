@@ -3,8 +3,8 @@ package com.company;
 import java.util.BitSet;
 
 public class BloomFilter {
-    public int filter_len;
-    BitSet storage;
+    private int filter_len;
+    private BitSet storage;
 
     public BloomFilter(int f_len) {
         filter_len = f_len;
@@ -16,7 +16,7 @@ public class BloomFilter {
         int index = 0;
         for (int i = 0; i < str1.length(); i++) {
             int code = (int) str1.charAt(i);
-            index = (index * 17 + code) % filter_len ;
+            index = (index * 17 + code) % filter_len;
         }
         return index;
     }
@@ -27,7 +27,7 @@ public class BloomFilter {
             int code = (int) str1.charAt(i);
             index = (index * 223 + code) % filter_len;
         }
-        return index ;
+        return index;
     }
 
     public void add(String str1) {
@@ -35,7 +35,6 @@ public class BloomFilter {
         int second = hash2(str1);
         storage.set(first);
         storage.set(second);
-
     }
 
     public boolean isValue(String str1) {

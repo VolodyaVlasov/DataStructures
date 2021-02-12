@@ -3,11 +3,11 @@ package com.company;
 import java.lang.reflect.Array;
 
 class NativeCache<T> {
-    public int size;
-    public String[] slots;
-    public T[] values;
-    public int[] hits;
-    int count;
+    private int size;
+    private String[] slots;
+    private T[] values;
+    private int[] hits;
+    private int count;
 
     public NativeCache(int sz, Class clazz) {
         size = sz;
@@ -77,8 +77,8 @@ class NativeCache<T> {
 
     public int whoIs() {
         int hit = 0;
-        for(int i = 1; i < size; i++){
-            if(hits[hit] > hits[i]){
+        for (int i = 1; i < size; i++) {
+            if (hits[hit] > hits[i]) {
                 hit = i;
             }
         }
