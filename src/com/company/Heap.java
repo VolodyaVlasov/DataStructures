@@ -1,8 +1,8 @@
 package com.company;
 
 class Heap {
-    public int[] HeapArray;
-    public int last;
+    private int[] HeapArray;
+    private int last;
 
     public Heap() {
         HeapArray = null;
@@ -25,12 +25,12 @@ class Heap {
         HeapArray[last - 1] = 0;
         int index = 0;
         while (2 * index + 2 < HeapArray.length) {
-            int cheak = HeapArray[2 * index + 1] > HeapArray[2 * index + 2] ? 2 * index + 1 : 2 * index + 2;
-            if (HeapArray[index] < HeapArray[cheak]) {
+            int check = HeapArray[2 * index + 1] > HeapArray[2 * index + 2] ? 2 * index + 1 : 2 * index + 2;
+            if (HeapArray[index] < HeapArray[check]) {
                 int temp = HeapArray[index];
-                HeapArray[index] = HeapArray[cheak];
-                HeapArray[cheak] = temp;
-                index = cheak;
+                HeapArray[index] = HeapArray[check];
+                HeapArray[check] = temp;
+                index = check;
             } else {
                 break;
             }
