@@ -1,20 +1,18 @@
 package com.company;
 
 public class HashTable {
-    public int size;
-    public int step;
-    public String[] slots;
+    private final int size;
+    private final int step;
+    private final String[] slots;
 
     public HashTable(int sz, int stp) {
         size = sz;
         step = stp;
         slots = new String[size];
-        for (int i = 0; i < size; i++) slots[i] = null;
     }
 
     public int hashFun(String value) {
-        int index = value.hashCode();
-        return index % size;
+        return value.hashCode() % size;
     }
 
     public int seekSlot(String value) {
