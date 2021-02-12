@@ -3,10 +3,11 @@ package com.company;
 import java.util.LinkedList;
 
 public class Queue<T> {
-    LinkedList<T> storage = new LinkedList<T>();
+    LinkedList<T> storage;
     int count;
 
     public Queue() {
+        storage = new LinkedList<T>();
         count = 0;
     }
 
@@ -25,8 +26,6 @@ public class Queue<T> {
     }
 
     public int size() {
-
         return count;
     }
-
 }
