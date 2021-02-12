@@ -3,9 +3,9 @@ package com.company;
 import java.lang.reflect.Array;
 
 class NativeDictionary<T> {
-    public int size;
-    public String[] slots;
-    public T[] values;
+    private int size;
+    private String[] slots;
+    private T[] values;
 
     public NativeDictionary(int sz, Class clazz) {
         size = sz;
@@ -14,8 +14,7 @@ class NativeDictionary<T> {
     }
 
     public int hashFun(String key) {
-        int index = key.hashCode();
-        return index % size;
+        return key.hashCode() % size;
     }
 
     public boolean isKey(String key) {
