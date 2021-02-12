@@ -2,11 +2,11 @@ package com.company;
 
 import java.util.LinkedList;
 
-public class PowerSet {
-    LinkedList<String>[] storage;
-    int count;
+public class Set {
+    private LinkedList<String>[] storage;
+    private int count;
 
-    public PowerSet() {
+    public Set() {
         storage = new LinkedList[20000];
         for (int i = 0; i < storage.length; i++) {
             storage[i] = new LinkedList<>();
@@ -48,47 +48,47 @@ public class PowerSet {
         return false;
     }
 
-    public PowerSet intersection(PowerSet set2) {
-        PowerSet powerSet = new PowerSet();
+    public Set intersection(Set set2) {
+        Set set = new Set();
         for (LinkedList<String> a : set2.storage) {
             for (String b : a) {
                 if (get(b)) {
-                    powerSet.put(b);
+                    set.put(b);
                 }
             }
         }
-        return powerSet;
+        return set;
     }
 
-    public PowerSet union(PowerSet set2) {
-        PowerSet powerSet = new PowerSet();
+    public Set union(Set set2) {
+        Set set = new Set();
         for (LinkedList<String> a : storage) {
             for (String b : a) {
-                powerSet.put(b);
+                set.put(b);
             }
         }
         for (LinkedList<String> a : set2.storage) {
             for (String b : a) {
-                powerSet.put(b);
+                set.put(b);
             }
         }
-        return powerSet;
+        return set;
     }
 
-    public PowerSet difference(PowerSet set2) {
-        PowerSet powerSet = new PowerSet();
+    public Set difference(Set set2) {
+        Set set = new Set();
         for (LinkedList<String> a : storage) {
             for (String b : a) {
                 if (!set2.get(b)) {
-                    powerSet.put(b);
+                    set.put(b);
                 }
             }
         }
-        return powerSet;
+        return set;
 
     }
 
-    public boolean isSubset(PowerSet set2) {
+    public boolean isSubset(Set set2) {
         for (LinkedList<String> a : set2.storage) {
             for (String b : a) {
                 if (!get(b)) {
