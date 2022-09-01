@@ -100,9 +100,7 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public T remove(final int index) throws IndexOutOfBoundsException {
-        if (index < 0 || index >= size()) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIndex(index);
         Item<T> item = getItemByIndex(index);
         remove(item);
         return item.element;
@@ -212,20 +210,22 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public T set(final int index, final T element) throws IndexOutOfBoundsException {
-        if (index < 0 || index >= size()) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIndex(index);
         Item<T> item = getItemByIndex(index);
         T e = item.element;
         item.element = element;
         return e;
     }
 
-    @Override
-    public T get(final int index) throws IndexOutOfBoundsException {
+    private void checkIndex(int index) {
         if (index < 0 || index >= size()) {
             throw new IndexOutOfBoundsException();
         }
+    }
+
+    @Override
+    public T get(final int index) throws IndexOutOfBoundsException {
+        checkIndex(index);
         return getItemByIndex(index).element;
     }
 
